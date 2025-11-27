@@ -211,8 +211,7 @@ void LoadScores() {
 }
 
 void SaveScore(int s) {
-    ofstream out("highscore.txt");
-
+   ofstream out("highscore.txt", ios::app);
     if (out.is_open()) {
         out << s << "\n";
     }
@@ -230,7 +229,10 @@ void InitAll() {
 void SpawnEnemiesGrid(int r, int c) {
     if (r < 1) r = 1;
     if (c < 1) c = 1;
-    if (r * c > MAX_ENEMIES) c = MAX_ENEMIES / r;
+    if (r * c > MAX_ENEMIES) {
+     if (r > MAX_ENEMIES) r = MAX_ENEMIES; 
+     c = MAX_ENEMIES / r;                   
+ }
     rows = r;
     cols = c;
     enemyCount = r * c;
