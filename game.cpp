@@ -1,4 +1,4 @@
-﻿#include "raylib.h"
+#include "raylib.h"
 #include <cstdio>
 #include <cmath>
 #include <cstdlib>
@@ -179,10 +179,10 @@ void drawHighScoreScreen() {
     }
 }
 int convertToInt(const string& s) {
-    int number = 0;  
+    int number = 0;
     bool isValid = true;
     for (int i = 0; i < s.length(); i++) {
-        if (s[i] < '0' || s[i] > '9') {  
+        if (s[i] < '0' || s[i] > '9') {
             isValid = false;
             break;
         }
@@ -190,7 +190,7 @@ int convertToInt(const string& s) {
     if (isValid && s.length() > 0) {
         number = 0;
         for (int i = 0; i < s.length(); i++) {
-            number = number * 10 + (s[i] - '0');  
+            number = number * 10 + (s[i] - '0');
         }
     }return number;
 }
@@ -204,19 +204,18 @@ void LoadScores() {
     while (in >> value && storedScoreCount < MAX_SCORES) {
         scoreList[storedScoreCount] = value;
         storedScoreCount++;
-       if (value > highScore)
+        if (value > highScore)
             highScore = value;
     }
     in.close();
 }
 
 void SaveScore(int s) {
-   ofstream out("highscore.txt", ios::app);
+    ofstream out("highscore.txt", ios::app);
     if (out.is_open()) {
         out << s << "\n";
     }
 }
-
 void InitAll() {
     for (int i = 0; i < MAX_ENEMIES; i++)
         enemies[i] = {};
@@ -229,10 +228,6 @@ void InitAll() {
 void SpawnEnemiesGrid(int r, int c) {
     if (r < 1) r = 1;
     if (c < 1) c = 1;
-    if (r * c > MAX_ENEMIES) {
-     if (r > MAX_ENEMIES) r = MAX_ENEMIES; 
-     c = MAX_ENEMIES / r;                   
- }
     rows = r;
     cols = c;
     enemyCount = r * c;
@@ -241,8 +236,7 @@ void SpawnEnemiesGrid(int r, int c) {
     const float startX = 80;
     const float startY = 60;
     for (int i = 0; i < MAX_ENEMIES; i++) {
-        enemies[i].alive = false;
-        enemies[i].type = 1;
+        enemies[i] = {}; 
     }
     int specialTopRows = 0;
     if (level == 4) specialTopRows = 2;
@@ -250,6 +244,7 @@ void SpawnEnemiesGrid(int r, int c) {
     int idx = 0;
     for (int r0 = 0; r0 < r; r0++) {
         for (int c0 = 0; c0 < c; c0++) {
+            if (idx >= MAX_ENEMIES) return;
             enemies[idx].pos.x = startX + c0 * gapX;
             enemies[idx].pos.y = startY + r0 * gapY;
             enemies[idx].alive = true;
@@ -257,6 +252,7 @@ void SpawnEnemiesGrid(int r, int c) {
             idx++;
         }
     }
+    enemyCount = idx;
 }
 void SpawnBoss() {
     boss.active = true;
@@ -295,7 +291,6 @@ int ChooseRandomAliveEnemy() {
         pick -= weight;
     }return -1;
 }
-
 void FireEnemyBulletFromRandom() {
     int id = ChooseRandomAliveEnemy();
     if (id < 0) return;
@@ -390,9 +385,8 @@ void CheckPlayerBulletEnemyCollisions() {
             float dy = fabs(pBullets[b].pos.y - boss.pos.y);
             if (dx < 100 && dy < 60) {
                 pBullets[b].active = false;
-                boss.health-=2;
+                boss.health -= 2;
                 PlaySound(explosionSound);
-
                 if (boss.health <= 0) {
                     boss.active = false;
                     isBossLevel = false;
@@ -480,8 +474,7 @@ int main() {
     InitAll();
     LoadScores();
     float enemyDirection = 1.0f;
-    // game loop
-    while (!WindowShouldClose() && currentState != STATE_EXIT) {
+    while (!WindowShouldClose() && currentState != STATE_EXIT) {// game loop
         switch (currentState) {
         case STATE_MENU:
             handleMenuInput();
@@ -547,6 +540,10 @@ int main() {
                     int nc = 6 + (level - 1);
                     if (nr * nc > MAX_ENEMIES) nc = MAX_ENEMIES / nr;
                     if (nc < 1) nc = 1;
+                    for (int i = 0; i < MAX_BULLETS; i++) {
+                        pBullets[i].active = false;
+                        eBullets[i].active = false;
+                    }
                     SpawnEnemiesGrid(nr, nc);
                     enemySpeed = 1.0f + (level - 1) * 0.5f;
                 }
@@ -605,20 +602,20 @@ int main() {
             break;
         }
     }
-SaveScore(score);
-UnloadTexture(enemy1);
-UnloadTexture(enemy2);
-UnloadTexture(player);
-UnloadTexture(bulletp);
-UnloadTexture(heart);
-UnloadTexture(background);
-UnloadTexture(bullete);
-UnloadTexture(bosss);
-UnloadSound(explosionSound);
-UnloadSound(playerHitSound);
-UnloadSound(levelCompleteSound);
-UnloadSound(playerDeadSound);
-CloseAudioDevice();
-CloseWindow();
-return 0;
+    SaveScore(score);
+    UnloadTexture(enemy1);
+    UnloadTexture(enemy2);
+    UnloadTexture(player);
+    UnloadTexture(bulletp);
+    UnloadTexture(heart);
+    UnloadTexture(background);
+    UnloadTexture(bullete);
+    UnloadTexture(bosss);
+    UnloadSound(explosionSound);
+    UnloadSound(playerHitSound);
+    UnloadSound(levelCompleteSound);
+    UnloadSound(playerDeadSound);
+    CloseAudioDevice();
+    CloseWindow();
+    return 0;
 }
