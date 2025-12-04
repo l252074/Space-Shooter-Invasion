@@ -105,7 +105,7 @@ void GameReset() {//resets the game to level 1
 }
 void UpdateBackground();
 void DrawBackground();
-void handleMenuInput() {
+void handleMenuInput() {//handles input of game
     if (IsKeyPressed(KEY_DOWN)) menuIndex++;
     if (IsKeyPressed(KEY_UP)) menuIndex--;
     if (menuIndex < 0) menuIndex = 4;
@@ -136,7 +136,7 @@ void drawMenuScreen() {
     EndDrawing();
 }
 
-void drawInstructionsScreen() {
+void drawInstructionsScreen() {//drwas intruction screen
     BeginDrawing();
     ClearBackground(BLACK);
     DrawText("-> INSTRUCTIONS <-", screenWidth / 2 - 160, 60, 40, WHITE);
