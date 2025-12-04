@@ -91,7 +91,7 @@ void UpdateBoss();
 void CheckPlayerBulletEnemyCollisions();
 void CheckEnemyBulletPlayerCollisions();
 bool AllEnemiesDead();
-void GameReset() {
+void GameReset() {//resets the game to level 1
     level = 1;
     score = 0;
     lives = 3;
@@ -216,7 +216,7 @@ void SaveScore(int s) {
         out << s << "\n";
     }
 }
-void InitAll() {
+void InitAll() {//sets everything to deafult
     for (int i = 0; i < MAX_ENEMIES; i++)
         enemies[i] = {};
     for (int i = 0; i < MAX_BULLETS; i++) {
@@ -225,7 +225,7 @@ void InitAll() {
     }
     boss = {};
 }
-void SpawnEnemiesGrid(int r, int c) {
+void SpawnEnemiesGrid(int r, int c) {//spwan grids according to level
     if (r < 1) r = 1;
     if (c < 1) c = 1;
     rows = r;
